@@ -11,11 +11,19 @@ export function normalizeURL(url: string): string {
 }
 
 export function getH1FromHTML(html: string): string {
-    const frag = JSDOM.fragment(html);
-    return frag.querySelector("h1")?.textContent || '';
+    try {
+        const frag = JSDOM.fragment(html);
+        return frag.querySelector("h1")?.textContent || "";
+    } catch (error) {
+        return "";
+    }
 }
 
 export function getFirstParagraphFromHTML(html: string): string {
-    const frag = JSDOM.fragment(html);
-    return frag.querySelector("main > p")?.textContent || frag.querySelector("p")?.textContent || '';
+    try {
+        const frag = JSDOM.fragment(html);
+        return frag.querySelector("main > p")?.textContent || frag.querySelector("p")?.textContent || '';
+    } catch (error) {
+        return "";
+    }
 }
