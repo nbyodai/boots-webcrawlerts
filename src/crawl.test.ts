@@ -41,7 +41,35 @@ test("getH1FromHTML multiple H1 titles", () => {
 });
 
 
-test.skip("getFirstParagraphFromHTML main priority", () => {
+test("getFirstParagraphFromHTML", () => {
+  const inputBody = `
+    <html><body>
+      <p>Outside paragraph.</p>
+      <div>
+        <em>Emphasis</em>
+      </div>
+    </body></html>
+  `;
+  const actual = getFirstParagraphFromHTML(inputBody);
+  const expected = "Outside paragraph.";
+  expect(actual).toEqual(expected);
+});
+
+test("getFirstParagraphFromHTML empty string with p tags", () => {
+  const inputBody = `
+    <html><body>
+      <h1>Test title</h1>
+      <div>
+        <em>Emphasis</em>
+      </div>
+    </body></html>
+  `;
+  const actual = getFirstParagraphFromHTML(inputBody);
+  const expected = "";
+  expect(actual).toEqual(expected);
+});
+
+test("getFirstParagraphFromHTML main priority", () => {
   const inputBody = `
     <html><body>
       <p>Outside paragraph.</p>
