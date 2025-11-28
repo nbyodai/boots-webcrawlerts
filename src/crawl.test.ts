@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { normalizeURL } from "./crawl";
+import { getFirstParagraphFromHTML, getH1FromHTML, normalizeURL } from "./crawl";
 
 test.each([
     'https://blog.boot.dev/path/',
@@ -16,4 +16,41 @@ test('normalizeURl should not process an empty string', () => {
 
 test('normalizeURl should  error if space exists within the string', () => {
     expect(() => normalizeURL('http ://blog .boot .dev')).toThrow('Empty string not valid')
+});
+
+
+test("getH1FromHTML basic", () => {
+  const inputBody = `<html><body><h1>Test Title</h1></body></html>`;
+  const actual = getH1FromHTML(inputBody);
+  const expected = "Test Title";
+  expect(actual).toEqual(expected);
+});
+
+test("getH1FromHTML no H1", () => {
+  const inputBody = `<html><body><p>Test Paragraph</p></body></html>`;
+  const actual = getH1FromHTML(inputBody);
+  const expected = "";
+  expect(actual).toEqual(expected);
+});
+
+test("getH1FromHTML multiple H1 titles", () => {
+  const inputBody = `<html><body><h1>Test Title</h1><div> <h1> Another Test Title</h1> </div></body></html>`;
+  const actual = getH1FromHTML(inputBody);
+  const expected = "Test Title";
+  expect(actual).toEqual(expected);
+});
+
+
+test.skip("getFirstParagraphFromHTML main priority", () => {
+  const inputBody = `
+    <html><body>
+      <p>Outside paragraph.</p>
+      <main>
+        <p>Main paragraph.</p>
+      </main>
+    </body></html>
+  `;
+  const actual = getFirstParagraphFromHTML(inputBody);
+  const expected = "Main paragraph.";
+  expect(actual).toEqual(expected);
 });
