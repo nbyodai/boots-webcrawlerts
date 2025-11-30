@@ -1,6 +1,7 @@
 import { argv } from 'node:process';
+import { getHTML } from './crawl';
 
-function main() {
+async function main() {
     if (argv.length < 3) {
         console.log('too few arguments')
         process.exit(1);
@@ -11,7 +12,8 @@ function main() {
     }
     const baseURL = argv[2];
 
-    console.log(`Now crawling "${baseURL}" ...`);
+    const html = await getHTML(baseURL);
+    console.log(html)
     process.exit(0);
 }
 

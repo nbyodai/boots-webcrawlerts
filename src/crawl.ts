@@ -1,5 +1,31 @@
 import { JSDOM } from 'jsdom';
 
+export async function getHTML(url: string) {
+    console.log(`Now crawling "${url}"`);
+    let res;
+    try {
+        res = await fetch(url, {
+            headers: {
+                'User-Agent': 'BootCrawler/1.0',
+            }
+        })
+    } catch (err) {
+        throw new Error(`Got Network error: ${(err as Error).message}`);
+    }
+
+    if (res.status > 399) {
+        console.log(`Got HTTP error: ${res.status} ${res.statusText}`);
+        return;
+    }
+
+    const contentType = res.headers.get('content-type');
+    if(!contentType || !contentType.includes('text/html')) {
+        console.log(`Got non-HTML response: ${contentType}`);
+        return;
+    }
+    return res.text()
+}
+
 export function normalizeURL(url: string): string {
     if (url === '' || url.includes(' ')) throw Error('Empty string not valid')
     const urlObj = new URL(url);
