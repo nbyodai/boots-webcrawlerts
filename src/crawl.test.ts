@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { getFirstParagraphFromHTML, getH1FromHTML, getURLsFromHTML, normalizeURL } from "./crawl";
+import { getFirstParagraphFromHTML, getH1FromHTML, getImagesFromHTML, getURLsFromHTML, normalizeURL } from "./crawl";
 
 test.each([
     'https://blog.boot.dev/path/',
@@ -112,6 +112,37 @@ test("getURLsFromHTML multiple", () => {
 
   const actual = getURLsFromHTML(inputBody, inputURL);
   const expected = ["https://blog.boot.dev", "https://blog.boot.dev/profile.png"];
+
+  expect(actual).toEqual(expected);
+});
+
+test("getImagesFromHTML relative", () => {
+  const inputURL = "https://blog.boot.dev";
+  const inputBody = `<html><body><img src="/logo.png" alt="Logo"></body></html>`;
+
+  const actual = getImagesFromHTML(inputBody, inputURL);
+  const expected = ["https://blog.boot.dev/logo.png"];
+
+  expect(actual).toEqual(expected);
+});
+
+
+test('getImagesFromHTML no imgs', () => {
+  const inputURL = "https://blog.boot.dev";
+  const inputBody = `<html><body><p>Boot dot dev</p></body></html>`;
+
+  const actual = getImagesFromHTML(inputBody, inputURL);
+  const expected: string[] = [];
+
+  expect(actual).toEqual(expected);
+})
+
+test("getImagesFromHTML multiple", () => {
+  const inputURL = "https://blog.boot.dev";
+  const inputBody = `<html><body><img src="/logo.png" alt="Logo"> <div>Another image <img src="/profile.png" alt="Profile"></div></body></html>`;
+
+  const actual = getImagesFromHTML(inputBody, inputURL);
+  const expected = ["https://blog.boot.dev/logo.png", "https://blog.boot.dev/profile.png"];
 
   expect(actual).toEqual(expected);
 });

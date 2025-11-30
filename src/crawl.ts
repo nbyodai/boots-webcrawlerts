@@ -46,3 +46,22 @@ export function getURLsFromHTML(html: string, baseURL: string): string[] {
         return [ error as string]
     }
 }
+
+export function getImagesFromHTML(html: string, baseURL: string): string[] {
+    try {
+        const frag = JSDOM.fragment(html)
+        const links = frag.querySelectorAll('img')
+        const results: string[] = []
+        Array.from(links).forEach((link) => {
+            const src = link.getAttribute('src')
+            if (src && !(src.startsWith('https') || src.startsWith('http'))) {
+                results.push(`${baseURL}${src}`)
+            } else if(src) {
+                results.push(src)
+            }
+        })
+        return results
+    } catch (error) {
+        return [ error as string]
+    }
+}
