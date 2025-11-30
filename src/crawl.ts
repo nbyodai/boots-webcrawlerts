@@ -65,3 +65,23 @@ export function getImagesFromHTML(html: string, baseURL: string): string[] {
         return [ error as string]
     }
 }
+
+type ExtractedPageData = Record<string, string | string[]>
+
+export function extractPageData(html: string, pageURL: string): ExtractedPageData {
+
+    const url = normalizeURL(pageURL);
+    const h1 = getH1FromHTML(html);
+    const firstParagraph = getFirstParagraphFromHTML(html);
+    const imageUrls = getImagesFromHTML(html, pageURL);
+    const outgoingLinks = getURLsFromHTML(html, pageURL);
+
+
+    return {
+        url: pageURL,
+        h1,
+        first_paragraph: firstParagraph,
+        image_urls: imageUrls,
+        outgoing_links: outgoingLinks
+    }
+}
