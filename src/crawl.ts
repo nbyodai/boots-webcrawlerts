@@ -27,3 +27,22 @@ export function getFirstParagraphFromHTML(html: string): string {
         return "";
     }
 }
+
+export function getURLsFromHTML(html: string, baseURL: string): string[] {
+    try {
+        const frag = JSDOM.fragment(html)
+        const links = frag.querySelectorAll('a')
+        const results: string[] = []
+        Array.from(links).forEach((link) => {
+            const href = link.getAttribute('href')
+            if (href && !(href.startsWith('https') || href.startsWith('http'))) {
+                results.push(`${baseURL}${href}`)
+            } else if(href) {
+                results.push(href)
+            }
+        })
+    return results
+    } catch (error) {
+        return [ error as string]
+    }
+}

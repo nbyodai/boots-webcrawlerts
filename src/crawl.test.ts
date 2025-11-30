@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { getFirstParagraphFromHTML, getH1FromHTML, normalizeURL } from "./crawl";
+import { getFirstParagraphFromHTML, getH1FromHTML, getURLsFromHTML, normalizeURL } from "./crawl";
 
 test.each([
     'https://blog.boot.dev/path/',
@@ -80,5 +80,38 @@ test("getFirstParagraphFromHTML main priority", () => {
   `;
   const actual = getFirstParagraphFromHTML(inputBody);
   const expected = "Main paragraph.";
+  expect(actual).toEqual(expected);
+});
+
+test("getURLsFromHTML absolute", () => {
+  const inputURL = "https://blog.boot.dev";
+  const inputBody = `<html><body><a href="https://blog.boot.dev"><span>Boot.dev</span></a></body></html>`;
+
+  const actual = getURLsFromHTML(inputBody, inputURL);
+  const expected = ["https://blog.boot.dev"];
+
+  expect(actual).toEqual(expected);
+});
+
+test('getURLsFromHTML no links', () => {
+  const inputURL = "https://blog.boot.dev";
+  const inputBody = `<html><body><p>Boot dot dev</p></body></html>`;
+
+  const actual = getURLsFromHTML(inputBody, inputURL);
+  const expected: string[] = [];
+
+  expect(actual).toEqual(expected);
+})
+
+test("getURLsFromHTML multiple", () => {
+  const inputURL = "https://blog.boot.dev";
+  const inputBody = `<html><body>
+    <a href="https://blog.boot.dev"><span>Boot.dev</span></a>
+    <a href="/profile.png"><span>My Profile pic</span></a>
+  </body></html>`;
+
+  const actual = getURLsFromHTML(inputBody, inputURL);
+  const expected = ["https://blog.boot.dev", "https://blog.boot.dev/profile.png"];
+
   expect(actual).toEqual(expected);
 });
